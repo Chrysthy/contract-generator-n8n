@@ -1,0 +1,437 @@
+{
+    "name": "Gerador de Contratos Chácara - Limpo",
+    "nodes": [
+        {
+            "parameters": {
+                "formTitle": "Contrato de Locação Temporária",
+                "formFields": {
+                    "values": [
+                        {
+                            "fieldLabel": "Nome Completo",
+                            "placeholder": "Digite seu nome completo",
+                            "requiredField": true
+                        },
+                        {
+                            "fieldLabel": "CPF/CNPJ do Cliente",
+                            "fieldType": "number",
+                            "placeholder": "Digite seu CPF/CNPJ",
+                            "requiredField": true
+                        },
+                        {
+                            "fieldLabel": "Endereço Cliente",
+                            "placeholder": "Rua/Avnida nº",
+                            "requiredField": true
+                        },
+                        {
+                            "fieldLabel": "Cidade",
+                            "placeholder": "Cidade",
+                            "requiredField": true
+                        },
+                        {
+                            "fieldLabel": "Estado",
+                            "placeholder": "Estado",
+                            "requiredField": true
+                        },
+                        {
+                            "fieldLabel": "CEP",
+                            "fieldType": "number",
+                            "placeholder": "Digite seu CEP",
+                            "requiredField": true
+                        },
+                        {
+                            "fieldLabel": "Telefone",
+                            "fieldType": "number",
+                            "placeholder": "Digite seu celular",
+                            "requiredField": true
+                        },
+                        {
+                            "fieldLabel": "Valor Total",
+                            "fieldType": "number",
+                            "placeholder": "Valor Total",
+                            "requiredField": true
+                        },
+                        {
+                            "fieldLabel": "Valor Antecipado",
+                            "fieldType": "number",
+                            "placeholder": "Digite o valor antecipado",
+                            "requiredField": true
+                        },
+                        {
+                            "fieldLabel": "Forma de Pagamento - Antecipado",
+                            "fieldType": "dropdown",
+                            "fieldOptions": {
+                                "values": [
+                                    {
+                                        "option": "PIX"
+                                    },
+                                    {
+                                        "option": "Transferência Bancária"
+                                    }
+                                ]
+                            },
+                            "requiredField": true
+                        },
+                        {
+                            "fieldLabel": "Forma de Pagamento - Restantes",
+                            "fieldType": "dropdown",
+                            "fieldOptions": {
+                                "values": [
+                                    {
+                                        "option": "PIX"
+                                    },
+                                    {
+                                        "option": "Transferência Bancária"
+                                    }
+                                ]
+                            },
+                            "requiredField": true
+                        },
+                        {
+                            "fieldLabel": "Data de Início",
+                            "fieldType": "date",
+                            "requiredField": true
+                        },
+                        {
+                            "fieldLabel": "Data de Saída",
+                            "fieldType": "date",
+                            "requiredField": true
+                        },
+                        {
+                            "fieldLabel": "Assinatura Cliente",
+                            "placeholder": "Sua assinatura digital",
+                            "requiredField": true
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.formTrigger",
+            "typeVersion": 2.2,
+            "position": [
+                -496,
+                -288
+            ],
+            "id": "form-trigger-id",
+            "name": "On form submission",
+            "webhookId": "WEBHOOK_ID_REMOVIDO"
+        },
+        {
+            "parameters": {
+                "operation": "copy",
+                "fileId": {
+                    "__rl": true,
+                    "value": "ID_DO_MODELO_GOOGLE_DOCS",
+                    "mode": "list"
+                },
+                "name": "=Contrato - {{ $('On form submission').item.json[\"Nome Completo\"] }}",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.googleDrive",
+            "typeVersion": 3,
+            "position": [
+                -48,
+                -288
+            ],
+            "id": "google-drive-copy-id",
+            "name": "Copy file",
+            "credentials": {
+                "googleDriveOAuth2Api": {
+                    "id": "ID_DA_SUA_CREDENCIAL",
+                    "name": "Google Drive account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "operation": "share",
+                "fileId": {
+                    "__rl": true,
+                    "value": "={{ $json.documentId }}",
+                    "mode": "id"
+                },
+                "permissionsUi": {
+                    "permissionsValues": {
+                        "role": "reader",
+                        "type": "anyone"
+                    }
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.googleDrive",
+            "typeVersion": 3,
+            "position": [
+                400,
+                -288
+            ],
+            "id": "google-drive-share-id",
+            "name": "Share file",
+            "credentials": {
+                "googleDriveOAuth2Api": {
+                    "id": "ID_DA_SUA_CREDENCIAL",
+                    "name": "Google Drive account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "options": {
+                        "caseSensitive": true,
+                        "leftValue": "",
+                        "typeValidation": "strict",
+                        "version": 2
+                    },
+                    "conditions": [
+                        {
+                            "id": "condition-id",
+                            "leftValue": "={{ $('On form submission').item.json.Telefone }}",
+                            "rightValue": "",
+                            "operator": {
+                                "type": "number",
+                                "operation": "notEmpty",
+                                "singleValue": true
+                            }
+                        }
+                    ],
+                    "combinator": "and"
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 2.2,
+            "position": [
+                624,
+                -288
+            ],
+            "id": "if-node-id",
+            "name": "If"
+        },
+        {
+            "parameters": {
+                "sendTo": "DESTINATARIO_EXEMPLO@EMAIL.COM",
+                "subject": "Contrato de Locação Temporária",
+                "emailType": "text",
+                "message": "=Olá, Tudo bem?\n\nAcesse o contrato pelo link:\n{{ 'https://docs.google.com/document/d/' + $('Update a document').item.json.documentId + '/view' }}\n\n",
+                "options": {
+                    "appendAttribution": false
+                }
+            },
+            "type": "n8n-nodes-base.gmail",
+            "typeVersion": 2.1,
+            "position": [
+                848,
+                -384
+            ],
+            "id": "gmail-send-id",
+            "name": "Send a message",
+            "credentials": {
+                "gmailOAuth2": {
+                    "id": "ID_DA_SUA_CREDENCIAL_GMAIL",
+                    "name": "Conta Gmail"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "operation": "get",
+                "documentURL": "=https://docs.google.com/document/d/ID_DO_MODELO_GOOGLE_DOCS/edit"
+            },
+            "type": "n8n-nodes-base.googleDocs",
+            "typeVersion": 2,
+            "position": [
+                -272,
+                -288
+            ],
+            "id": "google-docs-get-id",
+            "name": "Get a document",
+            "credentials": {
+                "googleDocsOAuth2Api": {
+                    "id": "ID_DA_SUA_CREDENCIAL",
+                    "name": "Google Docs account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "operation": "update",
+                "documentURL": "={{ $json.id }}",
+                "actionsUi": {
+                    "actionFields": [
+                        {
+                            "action": "replaceAll",
+                            "text": "{{nome_cliente}}",
+                            "replaceText": "={{ $('On form submission').item.json[\"Nome Completo\"] }}"
+                        },
+                        {
+                            "action": "replaceAll",
+                            "text": "{{cpf_cnpj}}",
+                            "replaceText": "={{ String($('On form submission').item.json['CPF/CNPJ do Cliente']) }}"
+                        },
+                        {
+                            "action": "replaceAll",
+                            "text": "{{endereco_cliente}}",
+                            "replaceText": "={{ $('On form submission').item.json['Endereço Cliente'] }}"
+                        },
+                        {
+                            "action": "replaceAll",
+                            "text": "{{data_inicio}}",
+                            "replaceText": "={{ new Date($('On form submission').item.json['Data de Início'] + \"T00:00:00\").toLocaleDateString(\"pt-BR\") }}"
+                        },
+                        {
+                            "action": "replaceAll",
+                            "text": "{{valor_total}}",
+                            "replaceText": "={{ new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Number($('On form submission').item.json['Valor Total'])) }}"
+                        },
+                        {
+                            "action": "replaceAll",
+                            "text": "{{valor_antecipado}}",
+                            "replaceText": "={{ new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Number($('On form submission').item.json[\"Valor Antecipado\"])) }}"
+                        },
+                        {
+                            "action": "replaceAll",
+                            "text": "{{cidade}}",
+                            "replaceText": "={{ $('On form submission').item.json.Cidade }}"
+                        },
+                        {
+                            "action": "replaceAll",
+                            "text": "{{estado}}",
+                            "replaceText": "={{ $('On form submission').item.json.Estado }}"
+                        },
+                        {
+                            "action": "replaceAll",
+                            "text": "{{data_assinatura}}",
+                            "replaceText": "={{ new Date($('On form submission').item.json.submittedAt).toLocaleDateString(\"pt-Br\") }}"
+                        },
+                        {
+                            "action": "replaceAll",
+                            "text": "{{data_saida}}",
+                            "replaceText": "={{ new Date($('On form submission').item.json[\"Data de Saída\"] + \"T00:00:00\").toLocaleDateString(\"pt-BR\") }}"
+                        },
+                        {
+                            "object": "text",
+                            "action": "replaceAll",
+                            "text": "{{telefone}}",
+                            "replaceText": "={{ $('On form submission').item.json.Telefone.toString() }}",
+                            "index": 0
+                        },
+                        {
+                            "action": "replaceAll",
+                            "text": "{{valor_restante}}",
+                            "replaceText": "={{ new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Number($('On form submission').item.json[\"Valor Total\"]) - Number($('On form submission').item.json[\"Valor Antecipado\"])) }}"
+                        },
+                        {
+                            "action": "replaceAll",
+                            "text": "{{assinatura_locatario}}",
+                            "replaceText": "={{ $('On form submission').item.json[\"Assinatura Cliente\"] }}"
+                        },
+                        {
+                            "action": "replaceAll",
+                            "text": "{{cep}}",
+                            "replaceText": "={{ String($('On form submission').item.json.CEP) }}"
+                        },
+                        {
+                            "action": "replaceAll",
+                            "text": "{{pagamento_antecipado}}",
+                            "replaceText": "={{ $('On form submission').item.json[\"Forma de Pagamento -  Antecipado\"] }}"
+                        },
+                        {
+                            "action": "replaceAll",
+                            "text": "{{pagamento_restante}}",
+                            "replaceText": "={{ $('On form submission').item.json[\"Forma de Pagamento - Restantes\"] }}"
+                        }
+                    ]
+                }
+            },
+            "type": "n8n-nodes-base.googleDocs",
+            "typeVersion": 2,
+            "position": [
+                176,
+                -288
+            ],
+            "id": "google-docs-update-id",
+            "name": "Update a document",
+            "credentials": {
+                "googleDocsOAuth2Api": {
+                    "id": "ID_DA_SUA_CREDENCIAL",
+                    "name": "Google Docs account"
+                }
+            }
+        }
+    ],
+    "connections": {
+        "On form submission": {
+            "main": [
+                [
+                    {
+                        "node": "Get a document",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Copy file": {
+            "main": [
+                [
+                    {
+                        "node": "Update a document",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Share file": {
+            "main": [
+                [
+                    {
+                        "node": "If",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "If": {
+            "main": [
+                [
+                    {
+                        "node": "Send a message",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Get a document": {
+            "main": [
+                [
+                    {
+                        "node": "Copy file",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Update a document": {
+            "main": [
+                [
+                    {
+                        "node": "Share file",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "active": true,
+    "settings": {
+        "executionOrder": "v1"
+    },
+    "meta": {
+        "templateCredsSetupCompleted": true
+    },
+    "tags": []
+}
