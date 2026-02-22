@@ -33,3 +33,13 @@ This system eliminates manual document generation by integrating web forms with 
 5. ✉️ **Delivery:** Runs a logical check and automatically emails the finalized contract to the client via Gmail.
 
 **Integrations used:** n8n, Google Docs, Google Drive, and Gmail.
+
+<br>
+
+## 🛠 Tools
+
+* **Google Forms** 
+* **Google Docs**
+* **Google Drive**
+* **Gmail** 
+* **n8n Nodes** 
