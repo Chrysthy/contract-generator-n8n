@@ -15,3 +15,11 @@ This system eliminates manual document generation by integrating web forms with 
   <a href="#-contributing">Contributing</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
   <a href="#support">Support</a>  
 </p>
+
+<br>
+
+## 📸 Screenshots
+
+<img src=".github/gif-do-projeto.gif" alt="gif do projeto">
+
+<br>
