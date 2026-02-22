@@ -42,4 +42,17 @@ This system eliminates manual document generation by integrating web forms with 
 * **Google Docs**
 * **Google Drive**
 * **Gmail** 
-* **n8n Nodes** 
+* **n8n Nodes**
+
+
+<br>
+
+## ⚙ How to Run
+
+1. Install [n8n](https://docs.n8n.io/hosting/installation/).
+2. Import the workflow JSON file.
+3. Google Cloud Console: Create a project and enable the Google Drive, Google Docs, and Gmail APIs.
+4. Credentials: In n8n, set up Google OAuth2 credentials to allow access to the services.
+5. Template: Create a Google Doc with placeholders in double curly braces (e.g., {{name}}, {{date}}) for the n8n node to replace.
+6.  Form: Set the trigger node to your preferred form builder (Google Forms, Typeform, etc.).
+7.  File ID: In the "Copy file" node, paste the ID of your master template document.
