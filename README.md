@@ -56,3 +56,12 @@ This system eliminates manual document generation by integrating web forms with 
 5. Template: Create a Google Doc with placeholders in double curly braces (e.g., {{name}}, {{date}}) for the n8n node to replace.
 6.  Form: Set the trigger node to your preferred form builder (Google Forms, Typeform, etc.).
 7.  File ID: In the "Copy file" node, paste the ID of your master template document.
+
+
+<br>
+
+## 📜 License
+
+* This project is licensed under the [MIT License](https://choosealicense.com/licenses/mit/)
+  
+<br>
